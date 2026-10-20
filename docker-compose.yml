@@ -8,14 +8,14 @@ services:
   php:
     build: ./docker/php
     restart: unless-stopped
-    container_name: docker.php
+    container_name: docker-php8
     tty: true
     depends_on:
       - mariadb
     networks:
       - docker.network
-    volumes:
-      - .:/var/www
+#    volumes:
+#      - .:/volumes/data
 
 #  nginx:
 #    build: ./docker/nginx
@@ -35,7 +35,7 @@ services:
   apache:
     build: ./docker/apache
     restart: unless-stopped
-    container_name: docker.apache
+    container_name: docker-httpd
     tty: true
     depends_on:
       - php
@@ -44,13 +44,13 @@ services:
       - "443:443"
     networks:
       - docker.network
-    volumes:
-      - .:/var/www
+#    volumes:
+#      - .:/volumes/data
 
   mariadb:
     image: mariadb
     restart: unless-stopped
-    container_name: docker.mariadb
+    container_name: docker-mariadb
     tty: true
     ports:
       - '3306:3306'

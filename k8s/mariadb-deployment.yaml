@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -o k8s/
+    kompose.version: 1.31.2 (a92241f79)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: mariadb
+  name: mariadb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: mariadb
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o k8s/
+        kompose.version: 1.31.2 (a92241f79)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/docker-php8-docker.network: "true"
+        io.kompose.service: mariadb
+    spec:
+      containers:
+        - env:
+            - name: MYSQL_DATABASE
+              value: development
+            - name: MYSQL_PASSWORD
+              value: mysql
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+            - name: MYSQL_USER
+              value: mysql
+          image: mariadb
+          name: docker-mariadb
+          ports:
+            - containerPort: 3306
+              hostPort: 3306
+              protocol: TCP
+          resources: {}
+          tty: true
+          volumeMounts:
+            - mountPath: /etc/mysql/conf.d/custom.cnf
+              name: mariadb-claim0
+              readOnly: true
+            - mountPath: /var/lib/mysql
+              name: mariadb-claim1
+      restartPolicy: Always
+      volumes:
+        - name: mariadb-claim0
+          persistentVolumeClaim:
+            claimName: mariadb-claim0
+            readOnly: true
+        - name: mariadb-claim1
+          persistentVolumeClaim:
+            claimName: mariadb-claim1
+status: {}

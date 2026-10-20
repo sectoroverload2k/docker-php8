@@ -93,6 +93,9 @@ ENV WORKDIR=/var/www/app
 RUN mkdir -p ${WORKDIR}
 WORKDIR ${WORKDIR}
 
+# Persistant Data Volumes
+RUN mkdir -p /volumes/data
+
 # Expose port
 EXPOSE 9000
 
